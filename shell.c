@@ -21,8 +21,3 @@ int main(void)
 
 	return (0);
 }
-
-
-// martin local 4 files
-// master
-// mostafa local 3 files

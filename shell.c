@@ -16,7 +16,6 @@ int main(int argc, char *argv[], char **env)
 	ssize_t bytes;
 
 	(void)argc;
-	(void)argv;
 
 	while (1)
 	{
@@ -28,7 +27,7 @@ int main(int argc, char *argv[], char **env)
 			continue;
 
 		if (cmdArr[0])
-			exec_command(cmdArr, env);
+			exec_command(cmdArr, env, argv[0]);
 	}
 
 	return (0);

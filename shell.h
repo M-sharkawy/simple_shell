@@ -14,6 +14,7 @@ void print_prompt(void);
 int str_len(const char *str);
 char *str_cpy(char *dest, char *src);
 char *str_dup(const char *str);
+char *get_line(void);
 char **get_command(const char *command);
 int exec_command(char *argv[], char **environ);
 int command_counter(const char * cmd, const char *delim);

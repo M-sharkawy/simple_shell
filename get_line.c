@@ -21,7 +21,7 @@ char *get_line(void)
 			write(STDOUT_FILENO, "\n", 1);
 		}
 		free(str);
-		exit(0);
+		exit(EXIT_SUCCESS);
 	}
 	return (str);
 }

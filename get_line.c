@@ -8,8 +8,9 @@
 
 char *get_line(void)
 {
-	char *str;
-	size_t num, bytes;
+	char *str = NULL;
+	size_t num = 0;
+	ssize_t bytes;
 
 	bytes = getline(&str, &num, stdin);
 
@@ -20,7 +21,7 @@ char *get_line(void)
 			write(STDOUT_FILENO, '\n', 1);
 		}
 		free(str);
-		exit(EXIT_SUCCESS);
+		exit(0);
 	}
-	return (0);
+	return (str);
 }

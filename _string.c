@@ -64,3 +64,51 @@ char *str_dup(const char *str)
 
 	return (newStr);
 }
+
+/**
+ * str_cmp - Function that compares between two strings
+ * @str_one: first string
+ * @str_two: second string
+ * @bytes: size to be compared
+ *
+ * Return: (0) Success
+ * otherwiese - (1) Faluire
+ */
+
+int str_cmp(const char *str_one, const char *str_two, int bytes)
+{
+	int index;
+
+	for (index = 0; index < bytes; index++)
+	{
+		if (str_one[index] != str_two[index])
+			return (1);
+	}
+
+	return (0);
+}
+
+/**
+ * str_cat - concatenation of two strings
+ * @dest: string to add on
+ * @src: string to add from
+ *
+ * Return: (dest)
+ */
+
+char *str_cat(char *dest, const char *src)
+{
+	int i, j;
+
+	if (src == NULL)
+		return (dest);
+
+	while (dest[i])
+		i++;
+
+	for (j = 0; src[j]; j++)
+		dest[j + i] = src[j];
+
+	dest[j + i] = '\0';
+	return (dest);
+}

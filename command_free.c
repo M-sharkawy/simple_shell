@@ -11,7 +11,7 @@ void command_free(char **commandArr)
 	int index;
 
 	index = 0;
-	while (commandArr)
+	while (commandArr[index])
 	{
 		free(commandArr[index]);
 		index++;

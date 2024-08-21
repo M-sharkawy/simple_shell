@@ -3,10 +3,16 @@
 /**
  * exit_shell - function to handle the exit command
  * @cmd_arry: array of commands
+ *
+ * Return: (cmdStat) which is the status of the command
  */
 
-void exit_shell(char **cmd_arry)
+int exit_shell(char **cmd_arry)
 {
-		command_free(cmd_arry);
-		exit(0);
+	int cmdStat = 0;
+
+	command_free(cmd_arry);
+	exit(0);
+
+	return (cmdStat);
 }

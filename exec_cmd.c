@@ -12,29 +12,38 @@ void write_errors(const char *cmd, const char *argv)
 	int length = 0, errorsCpy = errors;
 	char *mess;
 
+
 	while (errorsCpy > 0)
 	{
 		length++;
 		errorsCpy /= 10;
 	}
-	errorsCpy = errors;
+
+	if (length == 0)
+		length = 1;
+
 	mess = malloc(sizeof(char) * (length + 1));
 	if (!mess)
 	{
 		perror("malloc");
 		return;
 	}
+
 	mess[length] = '\0';
+	errorsCpy = errors;
+
 	write(STDERR_FILENO, argv, strlen(argv));
 	write(STDERR_FILENO, ": ", 2);
 	while (length > 0)
 	{
-		mess[--length] = '0' + (errorsCpy % 10);
+		mess[length - 1] = '0' + (errorsCpy % 10);
 		errorsCpy /= 10;
+		length--;
 	}
-	write(STDERR_FILENO, mess, 1);
+	write(STDERR_FILENO, mess, strlen(mess));
 	write(STDERR_FILENO, ": ", 2);
-	write(STDERR_FILENO, cmd, str_len(cmd) + 1);
+	write(STDERR_FILENO, cmd, strlen(cmd));
+
 	free(mess);
 	errors++;
 }
@@ -77,15 +86,24 @@ int exec_command(char **commandArry, char **environ, char *argv)
 	if (!path)
 	{
 		full_error_handling(commandArry[0], argv);
+		free(path);
 		if (isatty(STDIN_FILENO))
 			return (127);
 		exit(127);
+	}
+	if (!argv)
+	{
+		command_free(commandArry);
+		free(path);
+		return (1);
 	}
 
 	id = fork();
 	if (id < 0)
 	{
 		perror("fork");
+		command_free(commandArry);
+		free(path);
 		exit(EXIT_FAILURE);
 	} else if (id == 0)
 	{

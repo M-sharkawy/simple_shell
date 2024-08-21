@@ -39,6 +39,7 @@ void write_errors(const char *cmd, const char *argv);
 void full_error_handling(const char *cmd, const char *argv);
 char *path_variable(char **environment);
 char *path_var_checking(const char *cmd, char **environment);
-void exit_shell(char **cmd);
+int handle_build_in(char **cmd_arr, const char *argv);
+int exit_shell(char **cmd);
 
 #endif

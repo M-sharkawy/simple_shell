@@ -10,15 +10,15 @@
 
 char *path_variable(char **environment)
 {
-	int i, cmp_status;
+	int i, status;
 
 	if (!environment)
 		return (NULL);
 
 	for (i = 0; environment[i]; i++)
 	{
-		cmp_status = str_cmp(environment[i], "PATH", 4);
-		if (cmp_status == 0)
+		status = str_cmp(environment[i], "PATH", 4);
+		if (status == 0)
 			return (environment[i] + 5);
 	}
 
@@ -36,44 +36,35 @@ char *path_variable(char **environment)
 
 char *path_var_checking(const char *cmd, char **environment)
 {
-	char *path, *pathCpy, *token, *cmdCpy, *cmdPath;
-	const char *delim = ":";
-	int cmdPathLen, cmdLength;
+	char *path, *pathCpy, *token, *cmdPath;
+	int cmdPathLen;
 
 	path = path_variable(environment);
 	if (!path)
 		return (NULL);
+
 	pathCpy = str_dup(path);
 	if (!pathCpy)
 		return (NULL);
-	cmdCpy = str_dup(cmd);
-	if (!cmdCpy)
-	{
-		free_variadic(1, pathCpy);
+
+	token = strtok(pathCpy, ":");
+	if (!token)
 		return (NULL);
-	}
-	cmdLength = str_len(cmdCpy);
-	token = strtok(pathCpy, delim);
-	while (token != NULL)
+	while (token)
 	{
-		cmdPathLen = cmdLength + str_len(token) + 2;
-		cmdPath = (char *)malloc(sizeof(char) * cmdPathLen);
-		if (!cmdPath)
-		{
-			free_variadic(2, cmdCpy, pathCpy);
-			return (NULL);
-		}
+		cmdPathLen = str_len(token) + str_len(cmd) + 2;
+		cmdPath = malloc(sizeof(char) * cmdPathLen);
 		str_cpy(cmdPath, token);
-		str_cat(cmdPath, "/");
-		str_cat(cmdPath, cmdCpy);
+		concat(cmdPath, "/");
+		concat(cmdPath, cmd);
 		if (access(cmdPath, X_OK) == 0)
 		{
-			free_variadic(2, pathCpy, cmdCpy);
+			free(pathCpy);
 			return (cmdPath);
 		}
 		free(cmdPath);
-		token = strtok(NULL, delim);
+		token = strtok(NULL, ":");
 	}
-	free_variadic(2, cmdCpy, pathCpy);
+	free(pathCpy);
 	return (NULL);
 }

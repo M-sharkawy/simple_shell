@@ -33,11 +33,11 @@ int exec_command(char **commandArry, char **environ, char *argv);
 int command_counter(const char *cmd, const char *delim);
 void command_free(char **commandArr);
 void free_variadic(int counter, ...);
-int cd_funct(char **commandArr);
 void err_handling(char *mess, int stat);
-char *path_variable(char **environment);
-char *str_cat(char *dest, const char *src);
-char *path_var_checking(const char *cmd, char **environment);
+char *concat(char *dest, const char *src);
+void write_errors(const char *cmd, const char *argv);
 void full_error_handling(const char *cmd, const char *argv);
+char *path_variable(char **environment);
+char *path_var_checking(const char *cmd, char **environment);
 
 #endif

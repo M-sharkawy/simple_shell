@@ -14,7 +14,6 @@ int str_len(const char *str)
 	while (str[i] != '\0')
 		i++;
 
-	i += 1;
 	return (i);
 }
 
@@ -96,11 +95,11 @@ int str_cmp(const char *str_one, const char *str_two, int bytes)
  * Return: (dest)
  */
 
-char *str_cat(char *dest, const char *src)
+char *concat(char *dest, const char *src)
 {
-	int i, j;
+	int i = 0, j;
 
-	if (src == NULL)
+	if (!src || !dest)
 		return (dest);
 
 	while (dest[i])

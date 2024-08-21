@@ -35,7 +35,7 @@ char **get_command(const char *command)
 
 	while (token)
 	{
-		commandArray[i] = malloc(sizeof(char) * str_len(token));
+		commandArray[i] = malloc(sizeof(char) * (str_len(token) + 1));
 		if (!commandArray[i])
 		{
 			perror("malloc");

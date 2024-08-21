@@ -8,9 +8,35 @@
 
 void write_errors(const char *cmd, const char *argv)
 {
+	static int errors = 1;
+	int length = 0, errorsCpy = errors;
+	char *mess;
+
+	while (errorsCpy > 0)
+	{
+		length++;
+		errorsCpy /= 10;
+	}
+	errorsCpy = errors;
+	mess = malloc(sizeof(char) * (length + 1));
+	if (!mess)
+	{
+		perror("malloc");
+		return;
+	}
+	mess[length] = '\0';
 	write(STDERR_FILENO, argv, strlen(argv));
 	write(STDERR_FILENO, ": ", 2);
-	write(STDERR_FILENO, cmd, strlen(cmd));
+	while (length > 0)
+	{
+		mess[--length] = '0' + (errorsCpy % 10);
+		errorsCpy /= 10;
+	}
+	write(STDERR_FILENO, mess, 1);
+	write(STDERR_FILENO, ": ", 2);
+	write(STDERR_FILENO, cmd, str_len(cmd) + 1);
+	free(mess);
+	errors++;
 }
 
 /**
@@ -46,16 +72,15 @@ int exec_command(char **commandArry, char **environ, char *argv)
 {
 	pid_t id;
 	int status;
-	char *commandPath = path_var_checking(commandArry[0], environ);
+	char *path = path_var_checking(commandArry[0], environ);
 
-	if (!commandPath)
+	if (!path)
 	{
-		full_error_handling(commandPath, argv);
+		full_error_handling(commandArry[0], argv);
 		if (isatty(STDIN_FILENO))
 			return (127);
 		exit(127);
 	}
-
 
 	id = fork();
 	if (id < 0)
@@ -64,7 +89,7 @@ int exec_command(char **commandArry, char **environ, char *argv)
 		exit(EXIT_FAILURE);
 	} else if (id == 0)
 	{
-		status = execve(commandArry[0], commandArry, environ);
+		status = execve(path, commandArry, environ);
 		if (status == -1)
 		{
 			perror(argv);

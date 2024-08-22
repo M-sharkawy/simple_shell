@@ -14,22 +14,22 @@ char **get_command(const char *command)
 	int i = 0, arrSize;
 	const char *delim = " \t\n";
 
+	if (!command)
+		return (0);
+
 	arrSize = command_counter(command, delim);
 	if (arrSize == 0)
 		return (NULL);
+
 	cmdCpy = str_dup(command);
-	if (!cmdCpy)
-	{
-		perror("str_dup");
-		exit(EXIT_FAILURE);
-	}
+
 	commandArray = malloc(sizeof(char *) * (arrSize + 1));
 	if (!commandArray)
 	{
 		perror("malloc");
 		free(commandArray);
 		free(cmdCpy);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	token = strtok(cmdCpy, delim);
 
@@ -41,7 +41,7 @@ char **get_command(const char *command)
 			perror("malloc");
 			command_free(commandArray);
 			free_variadic(2, cmdCpy, token);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		str_cpy(commandArray[i], token);
 		token = strtok(NULL, delim);

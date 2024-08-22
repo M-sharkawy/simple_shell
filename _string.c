@@ -49,17 +49,21 @@ char *str_dup(const char *str)
 	int i;
 	char *newStr;
 
+	if (!str)
+		return (NULL);
+
 	newStr = (char *)malloc(sizeof(char) * str_len(str));
 	if (!newStr)
 	{
 		perror("malloc");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	for (i = 0; str[i] != '\0'; i++)
 	{
 		newStr[i] = str[i];
 	}
+	newStr[i] = '\0';
 
 	return (newStr);
 }
@@ -88,7 +92,7 @@ int str_cmp(const char *str_one, const char *str_two, int bytes)
 }
 
 /**
- * str_cat - concatenation of two strings
+ * concat - concatenation between two strings
  * @dest: string to add on
  * @src: string to add from
  *

@@ -12,7 +12,6 @@ void write_errors(const char *cmd, const char *argv)
 	int length = 0, errorsCpy = errors;
 	char *mess;
 
-
 	while (errorsCpy > 0)
 	{
 		length++;
@@ -91,12 +90,6 @@ int exec_command(char **commandArry, char **environ, char *argv)
 			return (127);
 		exit(127);
 	}
-	if (!argv)
-	{
-		command_free(commandArry);
-		free(path);
-		return (1);
-	}
 
 	id = fork();
 	if (id < 0)
@@ -116,6 +109,7 @@ int exec_command(char **commandArry, char **environ, char *argv)
 	}
 	else
 	{
+		free(path);
 		waitpid(id, &status, 0);
 	}
 	return (0);

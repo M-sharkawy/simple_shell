@@ -23,5 +23,17 @@ char *get_line(void)
 		free(str);
 		exit(EXIT_SUCCESS);
 	}
+
+	if (bytes <= 0)
+	{
+		free(str);
+		return (NULL);
+	}
+	if (str[0] == '\n')
+	{
+		free(str);
+		return (NULL);
+	}
+
 	return (str);
 }

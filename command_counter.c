@@ -11,21 +11,17 @@
 int command_counter(const char *cmd, const char *delim)
 {
 	char *fullCommand, *token;
-	int length;
+	int length = 0;
 
 	fullCommand = str_dup(cmd);
-	if (!fullCommand)
-	{
-		perror("str_dup");
-		return (-1);
-	}
+
 	token = strtok(fullCommand, delim);
 	while (token)
 	{
 		length++;
 		token = strtok(NULL, delim);
 	}
-	free(fullCommand);
-	free(token);
+	free_variadic(2, fullCommand, token);
+
 	return (length);
 }

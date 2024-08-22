@@ -47,7 +47,7 @@ int handle_build_in(char **cmd_arr, const char *argv)
 int main(int argc, char *argv[], char **env)
 {
 	char *buffer = NULL, **cmdArr;
-	int built_in_handled, status;
+	int builtInStat, cdStat = 0;
 
 	(void)argc;
 
@@ -55,21 +55,25 @@ int main(int argc, char *argv[], char **env)
 	{
 		print_prompt();
 		buffer = get_line();
+		if (!buffer || !buffer[0])
+		{
+			free(buffer);
+			continue;
+		}
 		cmdArr = get_command(buffer);
-		free_variadic(1, buffer);
-
+		free(buffer);
 		if (!cmdArr || !cmdArr[0])
 		{
 			command_free(cmdArr);
 			continue;
 		}
 
-		built_in_handled = handle_build_in(cmdArr, argv[0]);
-		if (!built_in_handled)
-			status = exec_command(cmdArr, env, argv[0]);
+		builtInStat = handle_build_in(cmdArr, argv[0]);
+		if (builtInStat == 0)
+			cdStat = cd_funct(cmdArr, env);
 
-		if (status != 0)
-			continue;
+		if (cdStat == 0)
+			exec_command(cmdArr, env, argv[0]);
 
 		command_free(cmdArr);
 		cmdArr = NULL;

@@ -9,11 +9,12 @@
  * Return: (status)
  */
 
-int handle_build_in(char **cmd_arr, const char *argv)
+int handle_build_in(char **cmd_arr, const char *argv, char **env)
 {
 	int status, i;
 	built_in arr[] = {
-		{"exit", exit_shell},
+		{"exit", exit_shell}, {"env", print_env},
+		{"setenv", set_env},
 		{NULL, NULL}
 	};
 
@@ -21,7 +22,8 @@ int handle_build_in(char **cmd_arr, const char *argv)
 	{
 		if (str_cmp(cmd_arr[0], arr[i].cmd, strlen(arr[i].cmd) + 1) == 0)
 		{
-			status = arr[i].f(cmd_arr);
+			status = arr[i].f(cmd_arr, &env);
+			printf("status--> %d\n", status);
 			if (status == -1)
 			{
 				full_error_handling(cmd_arr[0], argv);
@@ -29,7 +31,7 @@ int handle_build_in(char **cmd_arr, const char *argv)
 				if (isatty(STDIN_FILENO))
 					exit(2);
 			}
-			return (1);
+			return (status);
 		}
 	}
 	return (0);
@@ -46,13 +48,14 @@ int handle_build_in(char **cmd_arr, const char *argv)
 
 int main(int argc, char *argv[], char **env)
 {
-	char *buffer = NULL, **cmdArr;
-	int builtInStat, cdStat = 0;
+	char *buffer = NULL, **cmdArr, **env_cpy = initialize_env(env);
+	int builtInStat, cdStat;
 
 	(void)argc;
 
 	while (1)
 	{
+		cdStat = 1;
 		print_prompt();
 		buffer = get_line();
 		if (!buffer || !buffer[0])
@@ -68,13 +71,14 @@ int main(int argc, char *argv[], char **env)
 			continue;
 		}
 
-		builtInStat = handle_build_in(cmdArr, argv[0]);
+		builtInStat = handle_build_in(cmdArr, argv[0], env_cpy);
 		if (builtInStat == 0)
-			cdStat = cd_funct(cmdArr, env);
+			cdStat = cd_funct(cmdArr, env_cpy);
 
 		if (cdStat == 0)
 			exec_command(cmdArr, env, argv[0]);
 
+		printf("%d -- %d\n", builtInStat, cdStat);
 		command_free(cmdArr);
 		cmdArr = NULL;
 	}

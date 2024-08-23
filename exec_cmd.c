@@ -58,12 +58,12 @@ void full_error_handling(const char *cmd, const char *argv)
 	if (access(cmd, F_OK) != 0)
 	{
 		write_errors(cmd, argv);
-		write(STDERR_FILENO, ": No such file or directory\n", 28);
+		write(STDERR_FILENO, ": not found\n", 13);
 	}
 	else if (access(cmd, X_OK) != 0)
 	{
 		write_errors(cmd, argv);
-		write(STDERR_FILENO, ": Permission denied\n", 20);
+		write(STDERR_FILENO, ": Permission denied\n", 21);
 	}
 }
 

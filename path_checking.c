@@ -39,6 +39,14 @@ char *path_var_checking(const char *cmd, char **environment)
 	char *path, *pathCpy, *token, *cmdPath;
 	int cmdPathLen;
 
+	if (cmd[0] == '/')
+	{
+		if (access(cmd, X_OK) == 0)
+			return (str_dup(cmd));
+		else
+			return (NULL);
+	}
+
 	path = path_variable(environment);
 	if (!path)
 		return (NULL);

@@ -8,9 +8,9 @@
 
 void cd_err_handling(char *mess, int stat)
 {
+
+	(void)stat;
 	perror(mess);
-	if (stat != 0)
-		exit(EXIT_FAILURE);
 }
 
 /**

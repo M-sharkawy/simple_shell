@@ -47,16 +47,16 @@ char **initialize_env(char **env_vars)
  * otherwise - (0)
  */
 
-int print_env(char **cmd, char ***env)
+int print_env(char **cmd, char **env)
 {
 	int i = 0;
 
 	if (cmd[1])
 		return (0);
 
-	while ((*env)[i])
+	while (env[i])
 	{
-		write(STDOUT_FILENO, (*env)[i], str_len((*env)[i]));
+		write(STDOUT_FILENO, env[i], str_len(env[i]));
 		write(STDOUT_FILENO, "\n", 1);
 		i++;
 	}
@@ -99,10 +99,10 @@ char *full_env_var(char *cmdOne, char *cmdTwo)
  * Return: (1)
  */
 
-int set_env(char **cmd_arr, char ***env)
+int set_env(char **cmd_arr, char **env)
 {
 	char **newEnv, *variable;
-	int i, varLen, envLength = arr_size(*env);
+	int i, varLen, envLength = arr_size(env);
 
 	if (arr_size(cmd_arr) != 3)
 	{
@@ -112,14 +112,14 @@ int set_env(char **cmd_arr, char ***env)
 	varLen = str_len(cmd_arr[1]);
 	for (i = 0; i < envLength; i++)
 	{
-		if (str_cmp((*env)[i], cmd_arr[1], varLen) == 0 && (*env)[i][varLen] == '=')
+		if (str_cmp(env[i], cmd_arr[1], varLen) == 0 && env[i][varLen] == '=')
 		{
-			free((*env)[i]);
+			free(env[i]);
 			variable = full_env_var(cmd_arr[1], cmd_arr[2]);
 			if (!variable)
 				return (1);
 
-			(*env)[i] = variable;
+			env[i] = variable;
 			return (1);
 		}
 	}
@@ -128,7 +128,7 @@ int set_env(char **cmd_arr, char ***env)
 		return (1);
 
 	for (i = 0; i < envLength; i++)
-		newEnv[i] = (*env)[i];
+		newEnv[i] = env[i];
 
 	variable = full_env_var(cmd_arr[1], cmd_arr[2]);
 	if (!variable)
@@ -138,8 +138,8 @@ int set_env(char **cmd_arr, char ***env)
 	}
 	newEnv[envLength] = variable;
 	newEnv[envLength + 1] = NULL;
-	free(*env);
-	*env = newEnv;
-	printf("%s\n", (*env)[i]);
+	free(env);
+	env = newEnv;
+	printf("%s\n", env[i]);
 	return (1);
 }

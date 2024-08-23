@@ -8,7 +8,7 @@
  * Return: (cmdStat) which is the status of the command
  */
 
-int exit_shell(char **cmd_arry, char ***env)
+int exit_shell(char **cmd_arry, char **env)
 {
 	int cmdStat = 1;
 

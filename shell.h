@@ -21,7 +21,7 @@ extern char **env_cpy;
 typedef struct built_in
 {
 	char *cmd;
-	int (*f)(char **, char ***);
+	int (*f)(char **, char **);
 } built_in;
 
 void print_prompt(void);
@@ -41,7 +41,7 @@ void full_error_handling(const char *cmd, const char *argv);
 char *path_variable(char **environment);
 char *path_var_checking(const char *cmd, char **environment);
 int handle_build_in(char **cmd_arr, const char *argv, char **env);
-int exit_shell(char **cmd, char ***env);
+int exit_shell(char **cmd, char **env);
 void cd_err_handling(char *mess, int stat);
 char *get_home(char **env);
 int cd_funct(char **commandArr, char **env);
@@ -49,8 +49,8 @@ int arr_size(char **array);
 char *realloc_cpy(char *dest, char *src, int length);
 void *_realloc(void *ptr, int old_size, int new_size);
 char **initialize_env(char **env_vars);
-int print_env(char **cmd, char ***env);
-int set_env(char **cmd_arr, char ***env);
+int print_env(char **cmd, char **env);
+int set_env(char **cmd_arr, char **env);
 char *full_env_var(char *cmdOne, char *cmdTwo);
 char *pwd_var(char **env);
 

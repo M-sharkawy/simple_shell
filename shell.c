@@ -22,7 +22,7 @@ int handle_build_in(char **cmd_arr, const char *argv, char **env)
 	{
 		if (str_cmp(cmd_arr[0], arr[i].cmd, strlen(arr[i].cmd) + 1) == 0)
 		{
-			status = arr[i].f(cmd_arr, &env);
+			status = arr[i].f(cmd_arr, env);
 			printf("status--> %d\n", status);
 			if (status == -1)
 			{

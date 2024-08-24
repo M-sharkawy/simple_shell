@@ -64,7 +64,7 @@ char *get_home(char **env)
  * otherwise - (0)
  */
 
-int cd_funct(char **commandArr, char **env)
+int cd_funct(char **commandArr, struct env_cpy *env)
 {
 	int status = str_cmp(commandArr[0], "cd", 2), cdStat, size;
 	char *home = get_home(env);

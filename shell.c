@@ -10,7 +10,7 @@
  * Return: (status)
  */
 
-int handle_build_in(char **cmd_arr, const char *argv, char **env)
+int handle_build_in(char **cmd_arr, const char *argv, struct env_cpy *env)
 {
 	int status, i;
 	built_in arr[] = {
@@ -48,7 +48,8 @@ int handle_build_in(char **cmd_arr, const char *argv, char **env)
 
 int main(int argc, char *argv[], char **env)
 {
-	char *buffer = NULL, **cmdArr, **env_cpy = initialize_env(env);
+	char *buffer = NULL, **cmdArr;
+	env_cpy *envCpy = initialize_env(env);
 	int builtInStat, cdStat;
 
 	(void)argc;
@@ -71,9 +72,9 @@ int main(int argc, char *argv[], char **env)
 			continue;
 		}
 
-		builtInStat = handle_build_in(cmdArr, argv[0], env_cpy);
+		builtInStat = handle_build_in(cmdArr, argv[0], envCpy);
 		if (builtInStat == 0)
-			cdStat = cd_funct(cmdArr, env_cpy);
+			cdStat = cd_funct(cmdArr, envCpy);
 
 		if (cdStat == 0)
 			exec_command(cmdArr, env, argv[0]);

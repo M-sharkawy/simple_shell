@@ -4,38 +4,48 @@
  * initialize_env - Function to get the env vars at the beggining
  * @env_vars: envrionment variables
  *
- * Return: (env_temp) which the environemtn variables
+ * Return: (envPtr) which the environemtn variables
  */
 
-char **initialize_env(char **env_vars)
+env_cpy *initialize_env(char **env_arr)
 {
-	int i = 0, j;
-	char **env_temp;
+	int i, j;
+	env_cpy *envPtr, *temp, *newNode;
 
-	while (env_vars[i])
-		i++;
-
-
-	env_temp = malloc(sizeof(char *) * (i + 1));
-	if (!env_temp)
+	envPtr = malloc(sizeof(env_cpy));
+	if (!envPtr)
 	{
 		perror("malloc");
 		return (NULL);
 	}
-
-	for (j = 0; j < i; j++)
+	envPtr->str = NULL;
+	envPtr->next = NULL;
+	temp = envPtr;
+	for (i = 0; env_arr[i]; i++)
 	{
-		env_temp[j] = malloc(sizeof(char) * (str_len(env_vars[j]) + 1));
-		if (!env_temp[j])
+		temp->str = str_dup(env_arr[i]);
+		if (!temp->str)
 		{
 			perror("malloc");
-			command_free(env_temp);
+			free(envPtr);
 			return (NULL);
 		}
-		str_cpy(env_temp[j], env_vars[j]);
+		if (env_arr[i + 1])
+		{
+			newNode = malloc(sizeof(env_cpy));
+			if (!newNode)
+			{
+				perror(malloc);
+				free(temp->str);
+				free(envPtr);
+				return (NULL);
+			}
+			temp->next = newNode;
+			temp = temp->next;
+		} else
+				temp->next = NULL;
 	}
-	env_temp[i] = NULL;
-	return (env_temp);
+	return (envPtr);
 }
 
 /**
@@ -47,18 +57,18 @@ char **initialize_env(char **env_vars)
  * otherwise - (0)
  */
 
-int print_env(char **cmd, char **env)
+int print_env(char **cmd, struct env_cpy *env)
 {
-	int i = 0;
+	env_cpy *temp = env;
 
 	if (cmd[1])
 		return (0);
 
-	while (env[i])
+	while (temp)
 	{
-		write(STDOUT_FILENO, env[i], str_len(env[i]));
+		write(STDOUT_FILENO, temp->str, str_len(temp->str));
 		write(STDOUT_FILENO, "\n", 1);
-		i++;
+		temp = temp->next;
 	}
 
 	return (1);
@@ -99,46 +109,7 @@ char *full_env_var(char *cmdOne, char *cmdTwo)
  * Return: (1)
  */
 
-int set_env(char **cmd_arr, char **env)
+int set_env(char **cmd_arr, struct env_cpy *env)
 {
-	char **newEnv, *variable;
-	int i, varLen, envLength = arr_size(env);
-
-	if (arr_size(cmd_arr) != 3)
-	{
-		write(STDERR_FILENO, "Usage: setenv VARIABLE VALUE\n", 30);
-		return (1);
-	}
-	varLen = str_len(cmd_arr[1]);
-	for (i = 0; i < envLength; i++)
-	{
-		if (str_cmp(env[i], cmd_arr[1], varLen) == 0 && env[i][varLen] == '=')
-		{
-			free(env[i]);
-			variable = full_env_var(cmd_arr[1], cmd_arr[2]);
-			if (!variable)
-				return (1);
-
-			env[i] = variable;
-			return (1);
-		}
-	}
-	newEnv = malloc(sizeof(char *) * (envLength + 2));
-	if (!newEnv)
-		return (1);
-
-	for (i = 0; i < envLength; i++)
-		newEnv[i] = env[i];
-
-	variable = full_env_var(cmd_arr[1], cmd_arr[2]);
-	if (!variable)
-	{
-		free(newEnv);
-		return (1);
-	}
-	newEnv[envLength] = variable;
-	newEnv[envLength + 1] = NULL;
-	free(env);
-	env = newEnv;
-	return (1);
+	
 }

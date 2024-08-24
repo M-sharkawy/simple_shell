@@ -52,7 +52,7 @@ char *str_dup(const char *str)
 	if (!str)
 		return (NULL);
 
-	newStr = (char *)malloc(sizeof(char) * str_len(str));
+	newStr = (char *)malloc(sizeof(char) * (str_len(str) + 1));
 	if (!newStr)
 	{
 		perror("malloc");

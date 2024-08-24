@@ -77,7 +77,7 @@ int main(int argc, char *argv[], char **env)
 			cdStat = cd_funct(cmdArr, envCpy);
 
 		if (cdStat == 0)
-			exec_command(cmdArr, env, argv[0]);
+			exec_command(cmdArr, env, argv[0], envCpy);
 
 		command_free(cmdArr);
 		cmdArr = NULL;

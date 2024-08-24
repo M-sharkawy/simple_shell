@@ -69,22 +69,23 @@ void full_error_handling(const char *cmd, const char *argv)
 
 /**
  * exec_command - excutable file for commands
- * @commandArry: command arry
- * @environ: environment
+ * @cmd_rr: command arry
+ * @envir: environment
  * @argv: first arg value
+ * @env: struct of environment variables
  *
  * Return: 0 success
  */
 
-int exec_command(char **commandArry, char **environ, char *argv)
+int exec_command(char **cmd_rr, char **envir, char *argv, struct env_cpy *env)
 {
 	pid_t id;
 	int status;
-	char *path = path_var_checking(commandArry[0], environ);
+	char *path = path_var_checking(cmd_rr[0], env);
 
 	if (!path)
 	{
-		full_error_handling(commandArry[0], argv);
+		full_error_handling(cmd_rr[0], argv);
 		free(path);
 		if (isatty(STDIN_FILENO))
 			return (127);
@@ -95,12 +96,12 @@ int exec_command(char **commandArry, char **environ, char *argv)
 	if (id < 0)
 	{
 		perror("fork");
-		command_free(commandArry);
+		command_free(cmd_rr);
 		free(path);
 		exit(EXIT_FAILURE);
 	} else if (id == 0)
 	{
-		status = execve(path, commandArry, environ);
+		status = execve(path, cmd_rr, envir);
 		if (status == -1)
 		{
 			perror(argv);

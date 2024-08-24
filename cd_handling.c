@@ -38,18 +38,21 @@ int arr_size(char **array)
  * otherwise - (NULL)
  */
 
-char *get_home(char **env)
+char *get_home(struct env_cpy *env)
 {
-	int i, status;
+	int status;
+	env_cpy *temp = env;
 
 	if (!env)
 		return (NULL);
 
-	for (i = 0; env[i]; i++)
+	while (temp)
 	{
-		status = str_cmp(env[i], "HOME", 4);
+		status = str_cmp(temp->str, "HOME", 4);
 		if (status == 0)
-			return (env[i] + 5);
+			return (temp->str + 5);
+
+		temp = temp->next;
 	}
 
 	return (NULL);

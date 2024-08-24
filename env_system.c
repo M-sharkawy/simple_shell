@@ -9,7 +9,7 @@
 
 env_cpy *initialize_env(char **env_arr)
 {
-	int i, j;
+	int i;
 	env_cpy *envPtr, *temp, *newNode;
 
 	envPtr = malloc(sizeof(env_cpy));
@@ -35,7 +35,7 @@ env_cpy *initialize_env(char **env_arr)
 			newNode = malloc(sizeof(env_cpy));
 			if (!newNode)
 			{
-				perror(malloc);
+				perror("malloc");
 				free(temp->str);
 				free(envPtr);
 				return (NULL);
@@ -125,7 +125,7 @@ int set_env(char **cmd_arr, struct env_cpy *env)
 	while (temp->next)
 	{
 		if (str_cmp(envName, temp->str, str_len(envName)) == 0 &&
-		temp->str[str_len(envName)] == "=")
+		temp->str[str_len(envName)] == '=')
 		{
 			free(temp->str);
 			temp->str = full_env_var(envName, envValue);

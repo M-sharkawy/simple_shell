@@ -8,18 +8,21 @@
  * otherwise - NULL
  */
 
-char *path_variable(char **environment)
+char *path_variable(struct env_cpy *environment)
 {
-	int i, status;
+	int status;
+	env_cpy *temp = environment;
 
-	if (!environment)
+	if (!temp)
 		return (NULL);
 
-	for (i = 0; environment[i]; i++)
+	while (temp)
 	{
-		status = str_cmp(environment[i], "PATH", 4);
+		status = str_cmp(temp->str, "PATH", 4);
 		if (status == 0)
-			return (environment[i] + 5);
+			return (temp->str + 5);
+
+		temp = temp->next;
 	}
 
 	return (NULL);
@@ -34,7 +37,7 @@ char *path_variable(char **environment)
  * otherwise - (NULL)
  */
 
-char *path_var_checking(const char *cmd, char **environment)
+char *path_var_checking(const char *cmd, struct env_cpy *environment)
 {
 	char *path, *pathCpy, *token, *cmdPath;
 	int cmdPathLen;

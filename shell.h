@@ -60,6 +60,7 @@ env_cpy *initialize_env(char **env_arr);
 int print_env(char **cmd, struct env_cpy *env);
 int set_env(char **cmd_arr, struct env_cpy *env);
 char *full_env_var(char *cmdOne, char *cmdTwo);
+int cd_env(char *env_name, char *env_val,struct env_cpy *env);
 char *pwd_var(char **env);
 long int _atoi(char *str);
 

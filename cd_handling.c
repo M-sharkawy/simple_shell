@@ -59,6 +59,41 @@ char *get_home(struct env_cpy *env)
 }
 
 /**
+ * cd_env - handling cd aruments
+ *
+ * @env_name: vaiable name
+ * @env_val: variable value
+ * @env: enviroment variables
+ *
+ * Return: 0 success, otherwise 1
+*/
+
+int cd_env(char *env_name, char *env_val, struct env_cpy *env)
+{
+	env_cpy *temp = env;
+	char *newStr;
+
+	if (str_cmp("PWD", env_name, str_len("PWD")) == 0)
+	{
+		while (temp)
+		{
+			if (str_cmp(env_name, temp->str, str_len(env_name)) == 0)
+			{
+				newStr = full_env_var("PWD", env_val);
+				if (!newStr)
+					return (1);
+
+				free(temp->str);
+				temp->str = newStr;
+				return (0);
+			}
+			temp = temp->next;
+		}
+	}
+	return (1);
+}
+
+/**
  * cd_funct - Function to implement chdir
  * @commandArr: array of the input command line
  * @env: environment variables
@@ -69,7 +104,7 @@ char *get_home(struct env_cpy *env)
 
 int cd_funct(char **commandArr, struct env_cpy *env)
 {
-	int status = str_cmp(commandArr[0], "cd", 2), cdStat, size;
+	int status = str_cmp(commandArr[0], "cd", 2);
 	char *home = get_home(env);
 
 	if (status != 0)
@@ -82,25 +117,28 @@ int cd_funct(char **commandArr, struct env_cpy *env)
 			write(STDERR_FILENO, "cd: HOME not set\n", 17);
 			return (1);
 		}
-		cdStat = chdir(home);
-		if (cdStat != 0)
-			cd_err_handling("chdir", cdStat);
+		if (chdir(home) != 0)
+		{
+			cd_err_handling("chdir", 1);
+			return (1);
+		}
+		if (cd_env("PWD", home, env) != 0)
+			return (1);
 	}
 	else if (commandArr[1])
 	{
-		size = arr_size(commandArr);
-		if (size > 2)
+		if (arr_size(commandArr) > 2)
 		{
 			write(STDOUT_FILENO, "Too many args for cd command\n", 29);
 			return (1);
 		}
-		else
+		if (chdir(commandArr[1]) != 0)
 		{
-			cdStat = chdir(commandArr[1]);
-			if (cdStat != 0)
-				cd_err_handling("chdir", cdStat);
+			cd_err_handling("chdir", 1);
+			return (1);
 		}
+		if (cd_env("PWD", commandArr[1], env) != 0)
+			return (1);
 	}
-
 	return (1);
 }

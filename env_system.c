@@ -112,26 +112,26 @@ char *full_env_var(char *cmdOne, char *cmdTwo)
 int set_env(char **cmd_arr, struct env_cpy *env)
 {
 	env_cpy *temp = env, *newNode;
-	char *envName, *envValue;
+	char *envName, *envValue, *newStr;
 
 	if (arr_size(cmd_arr) != 3)
 	{
 		write(STDERR_FILENO, "Usage: setenv VARIABLE VALUE\n", 30);
 		return (1);
 	}
-	envName = cmd_arr[0];
-	envValue = cmd_arr[1];
-
+	envName = cmd_arr[1];
+	envValue = cmd_arr[2];
 	while (temp->next)
 	{
 		if (str_cmp(envName, temp->str, str_len(envName)) == 0 &&
 		temp->str[str_len(envName)] == '=')
 		{
-			free(temp->str);
-			temp->str = full_env_var(envName, envValue);
-			if (!temp->str)
+			newStr = full_env_var(envName, envValue);
+			if (!newStr)
 				return (1);
 
+			free(temp->str);
+			temp->str = newStr;
 			return (1);
 		}
 		temp = temp->next;
@@ -143,7 +143,7 @@ int set_env(char **cmd_arr, struct env_cpy *env)
 		return (1);
 	}
 	newNode->str = full_env_var(envName, envValue);
-	if (newNode->str)
+	if (!newNode->str)
 	{
 		free(newNode);
 		return (1);

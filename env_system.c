@@ -2,7 +2,7 @@
 
 /**
  * initialize_env - Function to get the env vars at the beggining
- * @env_vars: envrionment variables
+ * @env_arr: envrionment variables
  *
  * Return: (envPtr) which the environemtn variables
  */
@@ -111,5 +111,44 @@ char *full_env_var(char *cmdOne, char *cmdTwo)
 
 int set_env(char **cmd_arr, struct env_cpy *env)
 {
-	
+	env_cpy *temp = env, *newNode;
+	char *envName, *envValue;
+
+	if (arr_size(cmd_arr) != 3)
+	{
+		write(STDERR_FILENO, "Usage: setenv VARIABLE VALUE\n", 30);
+		return (1);
+	}
+	envName = cmd_arr[0];
+	envValue = cmd_arr[1];
+
+	while (temp->next)
+	{
+		if (str_cmp(envName, temp->str, str_len(envName)) == 0 &&
+		temp->str[str_len(envName)] == "=")
+		{
+			free(temp->str);
+			temp->str = full_env_var(envName, envValue);
+			if (!temp->str)
+				return (1);
+
+			return (1);
+		}
+		temp = temp->next;
+	}
+	newNode = malloc(sizeof(env_cpy));
+	if (!newNode)
+	{
+		perror("malloc");
+		return (1);
+	}
+	newNode->str = full_env_var(envName, envValue);
+	if (newNode->str)
+	{
+		free(newNode);
+		return (1);
+	}
+	newNode->next = NULL;
+	temp->next = newNode;
+	return (1);
 }

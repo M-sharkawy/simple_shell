@@ -5,16 +5,27 @@
  * @cmd_arry: array of commands
  * @env: environment variables
  *
- * Return: (cmdStat) which is the status of the command
+ * Return: (1)
  */
 
 int exit_shell(char **cmd_arry, char **env)
 {
-	int cmdStat = 1;
+	long int status;
 
 	(void)env;
-	command_free(cmd_arry);
-	exit(0);
+	if (!cmd_arry[1])
+	{
+		command_free(cmd_arry);
+		exit(0);
+	} else
+	{
+		status = _atoi(cmd_arry[1]);
+		if (status < 0)
+			return (-1);
 
-	return (cmdStat);
+		command_free(cmd_arry);
+		exit(status);
+	}
+
+	return (1);
 }

@@ -53,5 +53,6 @@ int print_env(char **cmd, char **env);
 int set_env(char **cmd_arr, char **env);
 char *full_env_var(char *cmdOne, char *cmdTwo);
 char *pwd_var(char **env);
+long int _atoi(char *str);
 
 #endif

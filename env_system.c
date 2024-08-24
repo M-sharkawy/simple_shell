@@ -140,6 +140,5 @@ int set_env(char **cmd_arr, char **env)
 	newEnv[envLength + 1] = NULL;
 	free(env);
 	env = newEnv;
-	printf("%s\n", env[i]);
 	return (1);
 }

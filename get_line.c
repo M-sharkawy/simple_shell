@@ -24,12 +24,7 @@ char *get_line(void)
 		exit(EXIT_SUCCESS);
 	}
 
-	if (bytes <= 0)
-	{
-		free(str);
-		return (NULL);
-	}
-	if (str[0] == '\n')
+	if (bytes <= 0 || str[0] == '\n')
 	{
 		free(str);
 		return (NULL);

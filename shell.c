@@ -1,6 +1,5 @@
 #include "shell.h"
 
-
 /**
  * handle_build_in - Function to handle build in commands
  * @cmd_arr: array of commands
@@ -10,12 +9,13 @@
  * Return: (status)
  */
 
-int handle_build_in(char **cmd_arr, const char *argv, struct env_cpy *env)
+int handle_build_in(char **cmd_arr, const char *argv, struct env_cpy **env)
 {
 	int status, i;
 	built_in arr[] = {
 		{"exit", exit_shell}, {"env", print_env},
 		{"setenv", set_env},
+		{"unsetenv", un_set_env},
 		{NULL, NULL}
 	};
 
@@ -52,8 +52,12 @@ int main(int argc, char *argv[], char **env)
 	env_cpy *envCpy = initialize_env(env);
 	int builtInStat, cdStat;
 
+	if (!envCpy)
+	{
+		perror("Failed to initialize environment");
+		exit(EXIT_FAILURE);
+	}
 	(void)argc;
-
 	while (1)
 	{
 		cdStat = 1;
@@ -72,7 +76,7 @@ int main(int argc, char *argv[], char **env)
 			continue;
 		}
 
-		builtInStat = handle_build_in(cmdArr, argv[0], envCpy);
+		builtInStat = handle_build_in(cmdArr, argv[0], &envCpy);
 		if (builtInStat == 0)
 			cdStat = cd_funct(cmdArr, envCpy);
 
@@ -80,8 +84,6 @@ int main(int argc, char *argv[], char **env)
 			exec_command(cmdArr, env, argv[0], envCpy);
 
 		command_free(cmdArr);
-		cmdArr = NULL;
 	}
-
 	return (0);
 }

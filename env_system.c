@@ -27,7 +27,7 @@ env_cpy *initialize_env(char **env_arr)
 		if (!temp->str)
 		{
 			perror("malloc");
-			free(envPtr);
+			free_env_list(envPtr);
 			return (NULL);
 		}
 		if (env_arr[i + 1])
@@ -36,8 +36,7 @@ env_cpy *initialize_env(char **env_arr)
 			if (!newNode)
 			{
 				perror("malloc");
-				free(temp->str);
-				free(envPtr);
+				free_env_list(envPtr);
 				return (NULL);
 			}
 			temp->next = newNode;
@@ -57,9 +56,9 @@ env_cpy *initialize_env(char **env_arr)
  * otherwise - (0)
  */
 
-int print_env(char **cmd, struct env_cpy *env)
+int print_env(char **cmd, struct env_cpy **env)
 {
-	env_cpy *temp = env;
+	env_cpy *temp = *env;
 
 	if (cmd[1])
 		return (0);
@@ -109,14 +108,14 @@ char *full_env_var(char *cmdOne, char *cmdTwo)
  * Return: (1)
  */
 
-int set_env(char **cmd_arr, struct env_cpy *env)
+int set_env(char **cmd_arr, struct env_cpy **env)
 {
-	env_cpy *temp = env, *newNode;
+	env_cpy *temp = *env, *newNode;
 	char *envName, *envValue, *newStr;
 
 	if (arr_size(cmd_arr) != 3)
 	{
-		write(STDERR_FILENO, "Usage: setenv VARIABLE VALUE\n", 30);
+		write(STDERR_FILENO, "Usage: setenv [VARIABLE] [VALUE]\n", 34);
 		return (1);
 	}
 	envName = cmd_arr[1];
@@ -150,5 +149,53 @@ int set_env(char **cmd_arr, struct env_cpy *env)
 	}
 	newNode->next = NULL;
 	temp->next = newNode;
+	return (1);
+}
+
+/**
+ * un_set_env - Function to remove existing environment variable
+ * @cmd_arr: array of commands
+ * @env: environment variables
+ *
+ * Return: (1)
+ */
+
+int un_set_env(char **cmd_arr, struct env_cpy **env)
+{
+	struct env_cpy *temp = *env, *deleted;
+	int cmdSize = arr_size(cmd_arr);
+	int condition = (cmdSize == 2 &&
+					str_cmp(cmd_arr[1], "--help", str_len(cmd_arr[1])));
+
+	if (cmdSize != 2 || condition == 0)
+	{
+		write(STDERR_FILENO, "Usage: unsetenv [VARIABLE]\n", 28);
+		return (1);
+	}
+
+	if (temp && str_cmp(temp->str, cmd_arr[1], str_len(cmd_arr[1])) == 0 &&
+		temp->str[str_len(cmd_arr[1])] == '=')
+	{
+		delete_node_head(env);
+		return (1);
+	}
+
+	while (temp && temp->next)
+	{
+		if (str_cmp(temp->next->str, cmd_arr[1], str_len(cmd_arr[1])) == 0 &&
+			temp->next->str[str_len(cmd_arr[1])] == '=')
+		{
+			deleted = temp->next;
+			temp->next = temp->next->next;
+			free(deleted->str);
+			free(deleted);
+			return (1);
+		}
+		temp = temp->next;
+	}
+
+	write(STDOUT_FILENO, "unsetenv: ", 11);
+	write(STDOUT_FILENO, cmd_arr[1], str_len(cmd_arr[1]));
+	write(STDOUT_FILENO, " not found\n", 12);
 	return (1);
 }

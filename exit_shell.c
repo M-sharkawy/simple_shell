@@ -8,7 +8,7 @@
  * Return: (1)
  */
 
-int exit_shell(char **cmd_arry, struct env_cpy *env)
+int exit_shell(char **cmd_arry, struct env_cpy **env)
 {
 	long int status;
 

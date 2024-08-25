@@ -29,6 +29,25 @@ char *path_variable(struct env_cpy *environment)
 }
 
 /**
+ * file_check - Function to check executable files and direct path
+ * @cmd: full command
+ *
+ * Return: (0) Success
+ */
+
+int file_check(const char *cmd)
+{
+	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/'))
+	{
+		if (access(cmd, X_OK) == 0)
+			return (0);
+		else
+			return (-1);
+	}
+	return (1);
+}
+
+/**
  * path_var_checking - Function to check Command in PATH Variable
  * @cmd: command to be checked
  * @environment: environment variables
@@ -40,15 +59,12 @@ char *path_variable(struct env_cpy *environment)
 char *path_var_checking(const char *cmd, struct env_cpy *environment)
 {
 	char *path, *pathCpy, *token, *cmdPath;
-	int cmdPathLen;
+	int cmdPathLen, fileChecks = file_check(cmd);
 
-	if (cmd[0] == '/')
-	{
-		if (access(cmd, X_OK) == 0)
-			return (str_dup(cmd));
-		else
-			return (NULL);
-	}
+	if (fileChecks == 0)
+		return (str_dup(cmd));
+	else if (fileChecks == -1)
+		return (NULL);
 
 	path = path_variable(environment);
 	if (!path)
@@ -59,12 +75,16 @@ char *path_var_checking(const char *cmd, struct env_cpy *environment)
 		return (NULL);
 
 	token = strtok(pathCpy, ":");
-	if (!token)
-		return (NULL);
 	while (token)
 	{
 		cmdPathLen = str_len(token) + str_len(cmd) + 2;
 		cmdPath = malloc(sizeof(char) * cmdPathLen);
+		if (!cmdPath)
+		{
+			perror("malloc");
+			free(pathCpy);
+			return (NULL);
+		}
 		str_cpy(cmdPath, token);
 		concat(cmdPath, "/");
 		concat(cmdPath, cmd);
@@ -76,6 +96,6 @@ char *path_var_checking(const char *cmd, struct env_cpy *environment)
 		free(cmdPath);
 		token = strtok(NULL, ":");
 	}
-	free(pathCpy);
+	free_variadic(2, pathCpy, token);
 	return (NULL);
 }

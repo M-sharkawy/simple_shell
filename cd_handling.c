@@ -59,41 +59,6 @@ char *get_home(struct env_cpy *env)
 }
 
 /**
- * cd_env - handling cd aruments
- *
- * @env_name: vaiable name
- * @env_val: variable value
- * @env: enviroment variables
- *
- * Return: 0 success, otherwise 1
-*/
-
-int cd_env(char *env_name, char *env_val, struct env_cpy *env)
-{
-	env_cpy *temp = env;
-	char *newStr;
-
-	if (str_cmp("PWD", env_name, str_len("PWD")) == 0)
-	{
-		while (temp)
-		{
-			if (str_cmp(env_name, temp->str, str_len(env_name)) == 0)
-			{
-				newStr = full_env_var("PWD", env_val);
-				if (!newStr)
-					return (1);
-
-				free(temp->str);
-				temp->str = newStr;
-				return (0);
-			}
-			temp = temp->next;
-		}
-	}
-	return (1);
-}
-
-/**
  * cd_funct - Function to implement chdir
  * @commandArr: array of the input command line
  * @env: environment variables
@@ -122,7 +87,7 @@ int cd_funct(char **commandArr, struct env_cpy *env)
 			cd_err_handling("chdir", 1);
 			return (1);
 		}
-		if (cd_env("PWD", home, env) != 0)
+		if (cd_pwd("PWD", home, env) != 0)
 			return (1);
 	}
 	else if (commandArr[1])
@@ -137,7 +102,7 @@ int cd_funct(char **commandArr, struct env_cpy *env)
 			cd_err_handling("chdir", 1);
 			return (1);
 		}
-		if (cd_env("PWD", commandArr[1], env) != 0)
+		if (cd_pwd("PWD", commandArr[1], env) != 0)
 			return (1);
 	}
 	return (1);

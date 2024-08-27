@@ -8,7 +8,9 @@
 void delete_node_head(env_cpy **env)
 {
 	struct env_cpy *temp = *env;
-	if (temp) {
+
+	if (temp)
+	{
 		*env = temp->next;
 		free(temp->str);
 		free(temp);

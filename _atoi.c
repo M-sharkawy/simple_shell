@@ -11,24 +11,32 @@
 long int _atoi(char *str)
 {
 	long int status = 0;
-	int i;
+	int i = 0;
+	int sign = 1;
 
-	if (str == NULL)
+	if (str == NULL || str[0] == '\0')
 		return (-1);
 
-	if (!str[1])
+	if (str[i] == '-')
 	{
-		status = str[0] - '0';
-		return (status);
+		sign = -1;
+		i++;
 	}
 
-	for (i = 0; str[i]; i++)
+	if (str[i] == '\0')
+		return (-1);
+
+	for (; str[i]; i++)
 	{
 		if (str[i] >= '0' && str[i] <= '9')
+		{
 			status = (status * 10) + (str[i] - '0');
+		}
 		else
+		{
 			return (-1);
+		}
 	}
 
-	return (status);
+	return (sign * status);
 }

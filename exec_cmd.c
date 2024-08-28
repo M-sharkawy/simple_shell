@@ -58,7 +58,7 @@ void full_error_handling(const char *cmd, const char *argv)
 	if (access(cmd, F_OK) != 0)
 	{
 		write_errors(cmd, argv);
-		write(STDERR_FILENO, ": not found\n", 13);
+		write(STDERR_FILENO, ": not found\n", 12);
 	}
 	else if (access(cmd, X_OK) != 0)
 	{

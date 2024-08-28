@@ -62,10 +62,8 @@ int main(int argc, char *argv[], char **env)
 		cmdArr = get_command(buffer);
 		free(buffer);
 		if (!cmdArr || !cmdArr[0])
-		{
-			command_free(cmdArr);
 			continue;
-		}
+
 		builtInStat = handle_build_in(cmdArr, argv[0], env);
 		if (builtInStat == 0)
 			exec_command(cmdArr, env, argv[0]);

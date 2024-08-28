@@ -35,7 +35,7 @@ char *concat(char *dest, const char *src);
 
 long int _atoi(char *str);
 
-int command_counter(const char *cmd, const char *delim);
+int command_counter(const char *cmd);
 void command_free(char **commandArr);
 void free_variadic(int counter, ...);
 

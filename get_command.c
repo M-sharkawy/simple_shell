@@ -17,35 +17,33 @@ char **get_command(const char *command)
 	if (!command)
 		return (0);
 
-	arrSize = command_counter(command, delim);
+	arrSize = command_counter(command);
 	if (arrSize == 0)
 		return (NULL);
 
 	cmdCpy = str_dup(command);
-	if (!cmdCpy)
-		return (NULL);
-
 	commandArray = malloc(sizeof(char *) * (arrSize + 1));
 	if (!commandArray)
 	{
 		perror("malloc");
 		free(cmdCpy);
-		return (NULL);
+		exit(EXIT_FAILURE);
 	}
 	token = strtok(cmdCpy, delim);
 	while (token)
 	{
-		commandArray[i] = str_dup(token);
+		commandArray[i] = malloc(sizeof(char) * str_len(token) + 1);
 		if (!commandArray[i])
 		{
 			command_free(commandArray);
-			free(cmdCpy);
-			return (NULL);
+			free_variadic(2, cmdCpy, token);
+			exit(EXIT_FAILURE);
 		}
+		str_cpy(commandArray[i], token);
 		token = strtok(NULL, delim);
 		i++;
 	}
 	commandArray[i] = NULL;
-	free(cmdCpy);
+	free_variadic(2, cmdCpy, token);
 	return (commandArray);
 }

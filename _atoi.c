@@ -12,15 +12,13 @@ long int _atoi(char *str)
 {
 	long int status = 0;
 	int i = 0;
-	int sign = 1;
 
 	if (str == NULL || str[0] == '\0')
 		return (-1);
 
 	if (str[i] == '-')
 	{
-		sign = -1;
-		i++;
+		return (-1);
 	}
 
 	if (str[i] == '\0')
@@ -38,5 +36,5 @@ long int _atoi(char *str)
 		}
 	}
 
-	return (sign * status);
+	return (status);
 }

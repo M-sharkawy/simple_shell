@@ -19,7 +19,7 @@
 typedef struct built_in
 {
 	char *cmd;
-	int (*f)(char **, char **);
+	int (*f)(char **, char **, const char *);
 } built_in;
 
 void print_prompt(void);
@@ -48,10 +48,10 @@ int file_check(const char *cmd);
 char *path_var_checking(const char *cmd, char **environment);
 
 int handle_build_in(char **cmd_arr, const char *argv, char **env);
-int exit_shell(char **cmd, char **env);
+int exit_shell(char **cmd, char **env, const char *argv);
 
 int arr_size(char **array);
 
-int print_env(char **cmd, char **env);
+int print_env(char **cmd, char **env, const char *argv);
 
 #endif

@@ -21,7 +21,7 @@ int handle_build_in(char **cmd_arr, const char *argv, char **env)
 	{
 		if (str_cmp(cmd_arr[0], arr[i].cmd, str_len(arr[i].cmd) + 1) == 0)
 		{
-			status = arr[i].f(cmd_arr, env);
+			status = arr[i].f(cmd_arr, env, argv);
 			if (status == -1)
 			{
 				full_error_handling(cmd_arr[0], argv);

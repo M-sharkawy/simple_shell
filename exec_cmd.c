@@ -63,7 +63,7 @@ void full_error_handling(const char *cmd, const char *argv)
 	else if (access(cmd, X_OK) != 0)
 	{
 		write_errors(cmd, argv);
-		write(STDERR_FILENO, ": Permission denied\n", 21);
+		write(STDERR_FILENO, ": Permission denied\n", 20);
 	}
 }
 

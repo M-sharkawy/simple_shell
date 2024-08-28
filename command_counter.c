@@ -3,7 +3,6 @@
 /**
  * command_counter - function to count number of cmd strings
  * @cmd: command to count
- * @delim: pointer points to delimiters used to split
  *
  * Return: (length) which is integer
  */

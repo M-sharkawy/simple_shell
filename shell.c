@@ -9,13 +9,11 @@
  * Return: (status)
  */
 
-int handle_build_in(char **cmd_arr, const char *argv, struct env_cpy **env)
+int handle_build_in(char **cmd_arr, const char *argv, char **env)
 {
 	int status, i;
 	built_in arr[] = {
 		{"exit", exit_shell}, {"env", print_env},
-		{"setenv", set_env},
-		{"unsetenv", un_set_env},
 		{NULL, NULL}
 	};
 
@@ -28,7 +26,7 @@ int handle_build_in(char **cmd_arr, const char *argv, struct env_cpy **env)
 			{
 				full_error_handling(cmd_arr[0], argv);
 				command_free(cmd_arr);
-				if (isatty(STDIN_FILENO))
+				if (!isatty(STDIN_FILENO))
 					exit(2);
 			}
 			return (status);
@@ -49,18 +47,11 @@ int handle_build_in(char **cmd_arr, const char *argv, struct env_cpy **env)
 int main(int argc, char *argv[], char **env)
 {
 	char *buffer = NULL, **cmdArr;
-	env_cpy *envCpy = initialize_env(env);
-	int builtInStat, cdStat;
+	int builtInStat;
 
-	if (!envCpy)
-	{
-		perror("Failed to initialize environment");
-		exit(EXIT_FAILURE);
-	}
 	(void)argc;
 	while (1)
 	{
-		cdStat = 1;
 		print_prompt();
 		buffer = get_line();
 		if (!buffer || !buffer[0])
@@ -75,13 +66,9 @@ int main(int argc, char *argv[], char **env)
 			command_free(cmdArr);
 			continue;
 		}
-
-		builtInStat = handle_build_in(cmdArr, argv[0], &envCpy);
+		builtInStat = handle_build_in(cmdArr, argv[0], env);
 		if (builtInStat == 0)
-			cdStat = cd_funct(cmdArr, envCpy);
-
-		if (cdStat == 0)
-			exec_command(cmdArr, env, argv[0], envCpy);
+			exec_command(cmdArr, env, argv[0]);
 
 		command_free(cmdArr);
 	}

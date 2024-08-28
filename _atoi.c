@@ -10,10 +10,12 @@
 
 long int _atoi(char *str)
 {
-	int status = 0, i;
+	long int status = 0;
+	int i;
 
 	if (str == NULL)
 		return (-1);
+
 	if (!str[1])
 	{
 		status = str[0] - '0';

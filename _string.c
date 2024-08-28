@@ -56,7 +56,7 @@ char *str_dup(const char *str)
 	if (!newStr)
 	{
 		perror("malloc");
-		exit(EXIT_FAILURE);
+		return (NULL);
 	}
 
 	for (i = 0; str[i] != '\0'; i++)

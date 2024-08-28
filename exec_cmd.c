@@ -72,16 +72,15 @@ void full_error_handling(const char *cmd, const char *argv)
  * @cmd_rr: command arry
  * @envir: environment
  * @argv: first arg value
- * @env: struct of environment variables
  *
  * Return: 0 success
  */
 
-int exec_command(char **cmd_rr, char **envir, char *argv, struct env_cpy *env)
+int exec_command(char **cmd_rr, char **envir, char *argv)
 {
 	pid_t id;
 	int status;
-	char *path = path_var_checking(cmd_rr[0], env);
+	char *path = path_var_checking(cmd_rr[0], envir);
 
 	if (!path)
 	{
